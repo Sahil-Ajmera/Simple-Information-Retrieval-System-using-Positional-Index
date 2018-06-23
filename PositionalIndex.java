@@ -236,6 +236,50 @@ public class PositionalIndex {
     }
 
 
+    /**
+     *
+     * @param query a phrase query that consists of any number of terms in the sequential order
+     * @return ids of documents that contain the phrase
+     */
+    public ArrayList<DocId> phraseQuery(String[] query)
+    {
+        ArrayList<DocId> docList1 = new ArrayList<DocId>();
+        ArrayList<DocId> docList2 = new ArrayList<DocId>();
+        ArrayList<DocId> docList = new ArrayList<DocId>();
+
+        if(query.length == 0)
+            return null;
+        else if(query.length == 1)
+        {
+            docList1 = docLists.get(termList.indexOf(query[0]));
+            return docList1;
+        }
+        else {
+
+            ArrayList<DocId> result = new ArrayList<DocId>();
+            if(termList.contains(query[0]))
+                docList1 = docLists.get(termList.indexOf(query[0]));
+            else
+                docList1 = null;
+            if(termList.contains(query[0]))
+                docList2 = docLists.get(termList.indexOf(query[1]));
+            else
+                docList2 = null;
+
+            result = intersect(docList1, docList2);
+            for (int i = 2; i < query.length - 1; i++) {
+                if(termList.contains(query[i]))
+                    docList = docLists.get(termList.indexOf(query[i]));
+                else
+                    docList = null;
+                result = intersect(result, docList);
+            }
+            return result;
+        }
+        //TASK3: TO BE COMPLETED
+    }
+
+
 
    public static void main(String[] args)
     {

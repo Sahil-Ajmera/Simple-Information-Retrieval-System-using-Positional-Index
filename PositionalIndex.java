@@ -281,6 +281,7 @@ public class PositionalIndex {
 
 
 
+
    public static void main(String[] args)
     {
         String[] docs = {"new home sales top forecasts",
@@ -293,7 +294,44 @@ public class PositionalIndex {
         //String[] docs = {"cv000_29416.txt","cv001_19502.txt","cv002_17424.txt","cv003_12683.txt","cv004_12641.txt"};
         PositionalIndex pi = new PositionalIndex(docs);
         System.out.print(pi);
+        System.out.println("****************************************Task-2****************************************");
+        System.out.println("Eg.Checking for 2nd and 5th list");
+        ArrayList<DocId> result = pi.intersect(pi.docLists.get(2),pi.docLists.get(5));
+        if(result == null)
+        {
+            System.out.println("<>");
+        }
+        else {
+            System.out.println(result);
+        }
+        System.out.println("****************************************Task-3****************************************");
+        System.out.println("Enter a phrase query of 2 words");
+        String phraseQuery = scanner.nextLine();
+        result = pi.phraseQuery(phraseQuery.split(" "));
+        if(result == null)
+        {
+            System.out.println("Not found");
+        }
+        else
+        {
+            System.out.println("Found :"+result);
+        }
+        //TASK4: TO BE COMPLETED: design and test phrase queries with 2-5 terms
+        System.out.println("****************************************Task-4****************************************");
+        System.out.println("Enter a phrase query of 2 words");
+        phraseQuery = scanner.nextLine();
+        result = pi.phraseQuery(phraseQuery.split(" "));
+        if(result == null)
+        {
+            System.out.println("Not found");
+        }
+        else
+        {
+            System.out.println("Found :"+result);
+        }
+
     }
+}
 
 //Supporting Class
 /**

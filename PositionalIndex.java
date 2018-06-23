@@ -153,6 +153,88 @@ public class PositionalIndex {
         return matrixString;
     }
 
+    /**
+     *
+     * @param l1 first postings
+     * @param l2 second postings
+     * @return merged result of two postings
+     */
+    public ArrayList<DocId> intersect(ArrayList<DocId> l1, ArrayList<DocId> l2)
+    {
+        //TASK2: TO BE COMPLETED
+        if(l1 == null)
+            return l2;
+        else if (l2 == null)
+            return l1;
+        ArrayList<DocId> mergedList = new ArrayList<DocId>();
+        int id1 = 0 ,id2 = 0;
+        while(id1 < l1.size() && id2 < l2.size())
+        {
+            if(l1.get(id1).docId == l2.get(id2).docId)
+            {
+                ArrayList<Integer> pp1 = l1.get(id1).positionList;
+                ArrayList<Integer> pp2 = l2.get(id2).positionList;
+                int pid1 = 0,pid2 = 0;
+                boolean match = false;
+                while(pid1 < pp1.size())
+                {
+                    pid2 = 0;
+                    while(pid2 < pp2.size())
+                    {
+                        if(pp2.get(pid2) - pp1.get(pid1) ==  1)
+                        {
+                            if(!match)
+                            {
+                                // If matching document has not been added originally
+                                if(pp1.get(pid1) > pp2.get(pid2))
+                                {
+                                    DocId docList = new DocId(l1.get(id1).docId, pp2.get(pid2));
+                                    mergedList.add(docList);
+                                }
+                                else
+                                {
+                                    // matching document has been added originally
+                                    DocId docList = new DocId(l1.get(id1).docId, pp1.get(pid1));
+                                    mergedList.add(docList);
+                                }
+                                match = true;
+                            }
+                            else
+                            {
+                                int k = 0;
+                                for(DocId docList:mergedList)
+                                {
+                                    if(l1.get(id1).docId == docList.docId)
+                                    {
+                                        if(pid1 > pid2) {
+                                            mergedList.get(k).insertPosition(pid2);
+                                        }
+                                        else
+                                        {
+                                            mergedList.get(k).insertPosition(pid1);
+                                        }
+                                    }
+                                    k++;
+                                }
+                            }
+                        }
+                        //else if(pp2.get(pid2) > pp1.get(pid1))
+                          //      break;
+                        pid2++;
+                    }
+                    pid1++;
+                }
+                id1++;
+                id2++;
+            }
+            else if(l1.get(id1).docId > l2.get(id2).docId)
+                id2++;
+            else
+                id1++;
+        }
+        return mergedList;
+    }
+
 
 
    public static void main(String[] args)

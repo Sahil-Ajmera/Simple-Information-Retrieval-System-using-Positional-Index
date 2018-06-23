@@ -1,14 +1,19 @@
+/*
+Author : Sahil Ajmera
+Lab 2 using Postitional Index
+ */
 //package lab2;
 
 import java.util.ArrayList;
 import java.io.*;
-import java.util.*
+import java.util.*;
 
 
 public class PositionalIndex {
     String[] myDocs;
     ArrayList<String> termList;
     ArrayList<ArrayList<DocId>> docLists;
+    int distance = 1;
 
     /**
      * Construct a positional index
@@ -42,6 +47,9 @@ public class PositionalIndex {
 
                 // Tokenization
                 String[] tokens  = all_lines.split("[ .,?!:;$%&*+()%#!/\\-\\^\"]+");
+
+
+                // lemmatization
 
                 for(int j =0 ; j<tokens.length;j++)
                 {
@@ -181,7 +189,7 @@ public class PositionalIndex {
                     pid2 = 0;
                     while(pid2 < pp2.size())
                     {
-                        if(pp2.get(pid2) - pp1.get(pid1) ==  1)
+                        if(pp2.get(pid2) - pp1.get(pid1) ==  distance)
                         {
                             if(!match)
                             {
@@ -235,7 +243,6 @@ public class PositionalIndex {
         return mergedList;
     }
 
-
     /**
      *
      * @param query a phrase query that consists of any number of terms in the sequential order
@@ -243,9 +250,11 @@ public class PositionalIndex {
      */
     public ArrayList<DocId> phraseQuery(String[] query)
     {
+        distance = 1;
         ArrayList<DocId> docList1 = new ArrayList<DocId>();
         ArrayList<DocId> docList2 = new ArrayList<DocId>();
         ArrayList<DocId> docList = new ArrayList<DocId>();
+        //ArrayList<ArrayList<DocId>> result = new ArrayList<ArrayList<DocId>>();
 
         if(query.length == 0)
             return null;
@@ -255,34 +264,34 @@ public class PositionalIndex {
             return docList1;
         }
         else {
-
             ArrayList<DocId> result = new ArrayList<DocId>();
-            if(termList.contains(query[0]))
+            if (termList.contains(query[0]))
                 docList1 = docLists.get(termList.indexOf(query[0]));
             else
                 docList1 = null;
-            if(termList.contains(query[0]))
+            if (termList.contains(query[0]))
                 docList2 = docLists.get(termList.indexOf(query[1]));
             else
                 docList2 = null;
 
             result = intersect(docList1, docList2);
-            for (int i = 2; i < query.length - 1; i++) {
-                if(termList.contains(query[i]))
+            distance++;
+            for (int i = 2; i < query.length; i++) {
+                if (termList.contains(query[i]))
                     docList = docLists.get(termList.indexOf(query[i]));
                 else
                     docList = null;
                 result = intersect(result, docList);
+                distance++;
             }
             return result;
         }
+
         //TASK3: TO BE COMPLETED
     }
 
 
-
-
-   public static void main(String[] args)
+    public static void main(String[] args)
     {
         String[] docs = {"new home sales top forecasts",
                 "home sales rise in july",
@@ -318,7 +327,7 @@ public class PositionalIndex {
         }
         //TASK4: TO BE COMPLETED: design and test phrase queries with 2-5 terms
         System.out.println("****************************************Task-4****************************************");
-        System.out.println("Enter a phrase query of 2 words");
+        System.out.println("Enter a phrase query of 2-5 words");
         phraseQuery = scanner.nextLine();
         result = pi.phraseQuery(phraseQuery.split(" "));
         if(result == null)
@@ -333,10 +342,9 @@ public class PositionalIndex {
     }
 }
 
-//Supporting Class
 /**
  *
- * @author Sahil Ajmera
+ * @author qyuvks
  * Document id class that contains the document id and the position list
  */
 class DocId{
@@ -367,3 +375,4 @@ class DocId{
         docIdString = docIdString.substring(0,docIdString.length()-1) + ">";
         return docIdString;
     }
+}

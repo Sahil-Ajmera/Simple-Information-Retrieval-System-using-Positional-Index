@@ -48,8 +48,8 @@ public class PositionalIndex {
                 // Tokenization
                 String[] tokens  = all_lines.split("[ .,?!:;$%&*+()%#!/\\-\\^\"]+");
 
+                // Porter's stemmer
 
-                // lemmatization
 
                 for(int j =0 ; j<tokens.length;j++)
                 {
@@ -100,6 +100,11 @@ public class PositionalIndex {
                 // Tokenization
                 String[] tokens  = all_lines.split("[ .,?!:;$%&*+()%#!/\\-\\^\"]+");
 
+                for(int k = 0;k<tokens.length;k++)
+                {
+                    perform_stemming(tokens[k],tokens,k);
+                }
+
                 for(int j =0 ; j<tokens.length;j++)
                 {
                     if(!termList.contains(tokens[j]))
@@ -140,6 +145,14 @@ public class PositionalIndex {
             }
         }
 
+    }
+
+    public void perform_stemming(String token,String[] tokens,int index)
+    {
+        Stemmer st = new Stemmer();
+        st.add(token.toCharArray(),token.length());
+        st.stem();
+        tokens[index] = st.toString();
     }
 
     /**
@@ -291,6 +304,7 @@ public class PositionalIndex {
     }
 
 
+
     public static void main(String[] args)
     {
         String[] docs = {"new home sales top forecasts",
@@ -329,7 +343,12 @@ public class PositionalIndex {
         System.out.println("****************************************Task-4****************************************");
         System.out.println("Enter a phrase query of 2-5 words");
         phraseQuery = scanner.nextLine();
-        result = pi.phraseQuery(phraseQuery.split(" "));
+        String[] tokens = phraseQuery.split("[ .,?!:;$%&*+()%#!/\\-\\^\"]+");
+        for(int k = 0;k<tokens.length;k++)
+        {
+            pi.perform_stemming(tokens[k],tokens,k);
+        }
+        result = pi.phraseQuery(tokens);
         if(result == null)
         {
             System.out.println("Not found");
